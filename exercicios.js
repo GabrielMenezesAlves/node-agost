@@ -22,3 +22,4 @@ return nova;
 
 }
 
+module.exports = reverter;
