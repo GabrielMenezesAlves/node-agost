@@ -3,6 +3,7 @@ const app = express();
 const fs = require("fs");
 
 const email = require("./email");
+const crud = require("./crud");
 
 // habilita ler form
 app.use(express.json());
@@ -13,21 +14,25 @@ app.get("/", function(req, res){
 });
 
 app.get("/contato", function(req, res){
-    res.sendFile(__dirname + "./form.html");
+    res.sendFile(__dirname + "/form.html");
 });
 
-app.get("/lista", function(req, res){
-    res.sendFile(__dirname + "/lista.csv");
+app.get("/lista", async function(req, res){
+    // res.sendFile(__dirname + "/lista.csv");
+    let dados = await crud.lerDados();
+
+    res.json(dados);
 });
 
-app.post("/contato", function(req, res){
+app.post("/contato", async function(req, res){
 
     let linha = req.body.nome +","+req.body.email + "\n";
 
+    await crud.cadastrar(req.body.nome, req.body.email);
+    
     email(req.body.nome, req.body.email, function(err){
         res.send("email enviado");
-    });   
-
+    });
       
 });
 
